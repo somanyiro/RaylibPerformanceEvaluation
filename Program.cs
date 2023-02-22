@@ -5,7 +5,8 @@ static class Program
 {
     public static int Main()
     {
-        Tests.SponzaScene.Test();
+        Tests.AnimationScene.Test();
+        
         return 0;
     }
 }

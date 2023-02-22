@@ -13,7 +13,7 @@ public class SponzaScene
             const int screenWidth = 1280;
             const int screenHeight = 720;
 
-            InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera free");
+            InitWindow(screenWidth, screenHeight, "Sponza test");
 
             // Define the camera to look into our 3d world
             Camera3D camera;
