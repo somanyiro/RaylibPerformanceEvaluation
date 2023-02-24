@@ -22,7 +22,7 @@ public class AnimationScene
 
         SetCameraMode(camera, CameraMode.CAMERA_ORBITAL);
 
-        int gridSize = 6;
+        int gridSize = 20;
         float separation = 5;
         List<Dancer> dancers = new List<Dancer>();
 
@@ -39,14 +39,22 @@ public class AnimationScene
             }
         }
 
-
+        Timer stabilizeTimer = new Timer(5);//wait for the framerate to stabilize
 
         while (!WindowShouldClose())
         {
             UpdateCamera(ref camera);
 
             float delta = GetFrameTime();
-            
+
+            stabilizeTimer.AdvanceTimer(delta);
+
+            if (stabilizeTimer.finishedThisFrame)
+                Console.WriteLine("Beginning frame logging");
+
+            if (stabilizeTimer.finished)
+                Logger.RecordFrame(delta);
+
             BeginDrawing();
             ClearBackground(Color.RAYWHITE);
 
@@ -64,6 +72,8 @@ public class AnimationScene
 
             EndDrawing();
         }
+
+        Logger.Save();
 
         CloseWindow();
     }
