@@ -14,28 +14,27 @@ public class AnimationScene
         //SetTargetFPS(60);
 
         Camera3D camera;
-        camera.position = new Vector3(10.0f, 10.0f, 10.0f);
-        camera.target = new Vector3(0.0f, 0.0f, 0.0f);
+        camera.position = new Vector3(20.0f, 30.0f, 20.0f);
+        camera.target = new Vector3(0.0f, 3.0f, 0.0f);
         camera.up = new Vector3(0.0f, 1.0f, 0.0f);
-        camera.fovy = 45.0f;
+        camera.fovy = 60.0f;
         camera.projection = CameraProjection.CAMERA_PERSPECTIVE;
 
-        SetCameraMode(camera, CameraMode.CAMERA_FREE);
+        SetCameraMode(camera, CameraMode.CAMERA_ORBITAL);
 
-        int gridSize = 3;
+        int gridSize = 6;
         float separation = 5;
         List<Dancer> dancers = new List<Dancer>();
 
         for (int i = 0; i < gridSize; i++)
-        
         {
             for (int j = 0; j < gridSize; j++)
             {
                 dancers.Add(new Dancer(
-                    "resources/models/dancer_mid.iqm",
+                    "resources/models/dancer_low.iqm",
                     "resources/models/danceTexture.png",
                     24,
-                    new Vector3(i*separation, 0, j*separation),
+                    new Vector3(i*separation - (float)gridSize*separation/2f, 0, j*separation - (float)gridSize*separation/2f),
                     0.05f));
             }
         }
@@ -88,8 +87,8 @@ class Dancer
         this.position = position;
         this.scale = scale;
 
-        mesh = LoadModel(modelPath);
-        texture = LoadTexture(texturePath);
+        mesh = AssetManager.LoadModel(modelPath);
+        texture = AssetManager.LoadTexture(texturePath);
         SetMaterialTexture(ref mesh, 0, MaterialMapIndex.MATERIAL_MAP_ALBEDO, ref texture);
 
         var animsSpan = LoadModelAnimations(modelPath, ref numberOfAnims);
