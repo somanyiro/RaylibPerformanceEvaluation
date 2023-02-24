@@ -7,7 +7,7 @@ namespace Tests
 public class AnimationScene
 {
 
-    public static void Test()
+    public static void Test(string modelPath, int gridSize, int animationSpeed, float testDuration)
     {
         InitWindow(1280, 720, "Animation test");
         
@@ -22,7 +22,6 @@ public class AnimationScene
 
         SetCameraMode(camera, CameraMode.CAMERA_ORBITAL);
 
-        int gridSize = 20;
         float separation = 5;
         List<Dancer> dancers = new List<Dancer>();
 
@@ -31,15 +30,18 @@ public class AnimationScene
             for (int j = 0; j < gridSize; j++)
             {
                 dancers.Add(new Dancer(
-                    "resources/models/dancer_low.iqm",
+                    "resources/models/"+modelPath+".iqm",
                     "resources/models/danceTexture.png",
-                    24,
+                    animationSpeed,
                     new Vector3(i*separation - (float)gridSize*separation/2f, 0, j*separation - (float)gridSize*separation/2f),
                     0.05f));
             }
         }
 
-        Timer stabilizeTimer = new Timer(5);//wait for the framerate to stabilize
+        Timer stabilizeTimer = new Timer(5); //wait for the framerate to stabilize
+        Timer testDurationTimer = new Timer(testDuration); //move onto the next test
+
+        Logger.SetInformation(modelPath, gridSize*gridSize, animationSpeed);
 
         while (!WindowShouldClose())
         {
@@ -48,12 +50,16 @@ public class AnimationScene
             float delta = GetFrameTime();
 
             stabilizeTimer.AdvanceTimer(delta);
+            testDurationTimer.AdvanceTimer(delta);
 
             if (stabilizeTimer.finishedThisFrame)
                 Console.WriteLine("Beginning frame logging");
 
             if (stabilizeTimer.finished)
                 Logger.RecordFrame(delta);
+
+            if (testDurationTimer.finishedThisFrame)
+                break;
 
             BeginDrawing();
             ClearBackground(Color.RAYWHITE);
