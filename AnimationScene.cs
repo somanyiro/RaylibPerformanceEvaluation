@@ -12,9 +12,9 @@ public class AnimationScene
     static float testDuration = 10;
     static List<Dancer> dancers;
     static Config[] testConfigs = {
-        new Config("dancer_low", 5, 24),
-        new Config("dancer_mid", 5, 24),
-        new Config("dancer_high", 5, 24)
+        new Config("hehe", "dancer_low", 5, 24),
+        new Config("huhu", "dancer_mid", 5, 24),
+        new Config("hoho", "dancer_high", 5, 24)
     };
 
     public static void Test()
@@ -101,19 +101,21 @@ public class AnimationScene
             }
         }
 
-        Logger.SetInformation(config.modelPath, config.gridSize*config.gridSize, config.animationSpeed);
+        Logger.SetInformation(config.label, config.modelPath, config.gridSize*config.gridSize, config.animationSpeed);
     }
 
 }
 
 struct Config
 {
-    public Config(string modelPath, int gridSize, float animationSpeed)
+    public Config(string label, string modelPath, int gridSize, float animationSpeed)
     {
+        this.label = label;
         this.modelPath = modelPath;
         this.gridSize = gridSize;
         this.animationSpeed = animationSpeed;
     }
+    public string label;
 
     public string modelPath;
     public int gridSize;

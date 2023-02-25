@@ -14,9 +14,9 @@ public static class Logger
         frames.Add(frameTime);
     }
 
-    public static void SetInformation(string model, int numberOfModels, float animationSpeed)
+    public static void SetInformation(string label, string model, int numberOfModels, float animationSpeed)
     {
-        information = $"\nmodel: {model}\nnumber of models: {numberOfModels}\nanimation speed (fps): {animationSpeed}\n";
+        information = $"\n{label}\nmodel: {model}\nnumber of models: {numberOfModels}\nanimation speed (fps): {animationSpeed}\n";
     }
 
     public static void Save()
@@ -37,10 +37,10 @@ public static class Logger
             double middle = (frames.Count - 1) / 2.0;
             float median = (ordered[(int)(middle)] + ordered[(int)(middle + 0.5)]) / 2;
 
-            sw.WriteLine($"Median: {median*1000}ms {1f/median}fps");
-            sw.WriteLine($"Average: {average*1000}ms {1f/average}fps");
-            sw.WriteLine($"Best: {best*1000}ms {1f/best}fps");
-            sw.WriteLine($"Worst: {worst*1000}ms {1f/worst}fps");
+            sw.WriteLine($"Median: {Math.Round(median*1000, 2)}ms {Math.Round(1f/median, 2)}fps");
+            sw.WriteLine($"Average: {Math.Round(average*1000, 2)}ms {Math.Round(1f/average, 2)}fps");
+            sw.WriteLine($"Best: {Math.Round(best*1000, 2)}ms {Math.Round(1f/best, 2)}fps");
+            sw.WriteLine($"Worst: {Math.Round(worst*1000, 2)}ms {Math.Round(1f/worst, 2)}fps");
 
             /*
             sw.WriteLine($"\nlisting frames\n");
