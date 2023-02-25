@@ -14,7 +14,7 @@ public static class Logger
         frames.Add(frameTime);
     }
 
-    public static void SetInformation(string model, int numberOfModels, int animationSpeed)
+    public static void SetInformation(string model, int numberOfModels, float animationSpeed)
     {
         information = $"\nmodel: {model}\nnumber of models: {numberOfModels}\nanimation speed (fps): {animationSpeed}\n";
     }
@@ -51,8 +51,15 @@ public static class Logger
             }
             */
 
+            ClearFrames();
+
             sw.Close();
         }
+    }
+
+    public static void ClearFrames()
+    {
+        frames.Clear();
     }
 
     static void CleanFrames()

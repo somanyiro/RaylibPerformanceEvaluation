@@ -7,12 +7,15 @@ namespace Tests
 public class AnimationScene
 {
 
-    static float separation = 5;
+    static float modelSeparation = 5;
     static float stabilizeTime = 5;
     static float testDuration = 10;
     static List<Dancer> dancers;
-    static Timer stabilizeTimer = new Timer(stabilizeTime, false); //wait for the framerate to stabilize
-    static Timer testDurationTimer = new Timer(testDuration, false); //move onto the next test
+    static Config[] testConfigs = {
+        new Config("dancer_low", 5, 24),
+        new Config("dancer_mid", 5, 24),
+        new Config("dancer_high", 5, 24)
+    };
 
     public static void Test()
     {
@@ -29,12 +32,14 @@ public class AnimationScene
 
         SetCameraMode(camera, CameraMode.CAMERA_ORBITAL);
         
-        SetUp("dancer_low", 2, 24);
+        Timer stabilizeTimer = new Timer(stabilizeTime, true); //wait for the framerate to stabilize
+        Timer testDurationTimer = new Timer(testDuration, true); //move onto the next test
+
+        SetUp(testConfigs[0]);
+        int currentConfig = 0;
 
         while (!WindowShouldClose())
         {
-            UpdateCamera(ref camera);
-
             float delta = GetFrameTime();
 
             stabilizeTimer.AdvanceTimer(delta);
@@ -47,8 +52,17 @@ public class AnimationScene
                 Logger.RecordFrame(delta);
 
             if (testDurationTimer.finishedThisFrame)
-                break;
+            {
+                Logger.Save();
+                if (currentConfig == testConfigs.Length-1) break;
+                currentConfig++;
+                SetUp(testConfigs[currentConfig]);
+                stabilizeTimer.Reset();
+                testDurationTimer.Reset();
+            }
 
+            UpdateCamera(ref camera);
+            
             BeginDrawing();
             ClearBackground(Color.RAYWHITE);
 
@@ -67,34 +81,43 @@ public class AnimationScene
             EndDrawing();
         }
 
-        Logger.Save();
-
         CloseWindow();
     }
 
-    static void SetUp(string modelPath, int gridSize, int animationSpeed)
+    static void SetUp(Config config)
     {
         dancers = new List<Dancer>();
 
-        for (int i = 0; i < gridSize; i++)
+        for (int i = 0; i < config.gridSize; i++)
         {
-            for (int j = 0; j < gridSize; j++)
+            for (int j = 0; j < config.gridSize; j++)
             {
                 dancers.Add(new Dancer(
-                    "resources/models/"+modelPath+".iqm",
+                    "resources/models/"+config.modelPath+".iqm",
                     "resources/models/danceTexture.png",
-                    animationSpeed,
-                    new Vector3(i*separation - (float)gridSize*separation/2f, 0, j*separation - (float)gridSize*separation/2f),
+                    config.animationSpeed,
+                    new Vector3(i*modelSeparation - (float)config.gridSize*modelSeparation/2f, 0, j*modelSeparation - (float)config.gridSize*modelSeparation/2f),
                     0.05f));
             }
         }
 
-        stabilizeTimer.Reset();
-        testDurationTimer.Reset();
-
-        Logger.SetInformation(modelPath, gridSize*gridSize, animationSpeed);
+        Logger.SetInformation(config.modelPath, config.gridSize*config.gridSize, config.animationSpeed);
     }
 
+}
+
+struct Config
+{
+    public Config(string modelPath, int gridSize, float animationSpeed)
+    {
+        this.modelPath = modelPath;
+        this.gridSize = gridSize;
+        this.animationSpeed = animationSpeed;
+    }
+
+    public string modelPath;
+    public int gridSize;
+    public float animationSpeed;
 }
 
 class Dancer
