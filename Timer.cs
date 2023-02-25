@@ -41,5 +41,10 @@ public class Timer
         timeLeft = waitTime;
     }
 
+    public void SetWaitTime(float waitTime)
+    {
+        this.waitTime = waitTime;
+    }
+
 }
 }

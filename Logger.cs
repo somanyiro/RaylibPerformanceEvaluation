@@ -21,6 +21,8 @@ public static class Logger
 
     public static void Save()
     {
+        if (frames.Count < 2) return;
+
         CleanFrames();
 
         using (StreamWriter sw = new StreamWriter("logs.txt", true))

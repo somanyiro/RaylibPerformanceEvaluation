@@ -5,7 +5,7 @@ static class Program
 {
     public static int Main()
     {
-        Tests.AnimationScene.Test("dancer_low", 10, 24, 10);
+        Tests.AnimationScene.Test();
         
         return 0;
     }

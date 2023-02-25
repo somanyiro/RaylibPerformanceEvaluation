@@ -7,7 +7,14 @@ namespace Tests
 public class AnimationScene
 {
 
-    public static void Test(string modelPath, int gridSize, int animationSpeed, float testDuration)
+    static float separation = 5;
+    static float stabilizeTime = 5;
+    static float testDuration = 10;
+    static List<Dancer> dancers;
+    static Timer stabilizeTimer = new Timer(stabilizeTime, false); //wait for the framerate to stabilize
+    static Timer testDurationTimer = new Timer(testDuration, false); //move onto the next test
+
+    public static void Test()
     {
         InitWindow(1280, 720, "Animation test");
         
@@ -21,27 +28,8 @@ public class AnimationScene
         camera.projection = CameraProjection.CAMERA_PERSPECTIVE;
 
         SetCameraMode(camera, CameraMode.CAMERA_ORBITAL);
-
-        float separation = 5;
-        List<Dancer> dancers = new List<Dancer>();
-
-        for (int i = 0; i < gridSize; i++)
-        {
-            for (int j = 0; j < gridSize; j++)
-            {
-                dancers.Add(new Dancer(
-                    "resources/models/"+modelPath+".iqm",
-                    "resources/models/danceTexture.png",
-                    animationSpeed,
-                    new Vector3(i*separation - (float)gridSize*separation/2f, 0, j*separation - (float)gridSize*separation/2f),
-                    0.05f));
-            }
-        }
-
-        Timer stabilizeTimer = new Timer(5); //wait for the framerate to stabilize
-        Timer testDurationTimer = new Timer(testDuration); //move onto the next test
-
-        Logger.SetInformation(modelPath, gridSize*gridSize, animationSpeed);
+        
+        SetUp("dancer_low", 2, 24);
 
         while (!WindowShouldClose())
         {
@@ -65,13 +53,13 @@ public class AnimationScene
             ClearBackground(Color.RAYWHITE);
 
             BeginMode3D(camera);
-
+            
             foreach (var item in dancers)
             {
                 item.AdvanceAnimation(delta);
                 item.DrawDancer();
             }
-
+            
             EndMode3D();
 
             DrawFPS(10, 10);
@@ -82,6 +70,29 @@ public class AnimationScene
         Logger.Save();
 
         CloseWindow();
+    }
+
+    static void SetUp(string modelPath, int gridSize, int animationSpeed)
+    {
+        dancers = new List<Dancer>();
+
+        for (int i = 0; i < gridSize; i++)
+        {
+            for (int j = 0; j < gridSize; j++)
+            {
+                dancers.Add(new Dancer(
+                    "resources/models/"+modelPath+".iqm",
+                    "resources/models/danceTexture.png",
+                    animationSpeed,
+                    new Vector3(i*separation - (float)gridSize*separation/2f, 0, j*separation - (float)gridSize*separation/2f),
+                    0.05f));
+            }
+        }
+
+        stabilizeTimer.Reset();
+        testDurationTimer.Reset();
+
+        Logger.SetInformation(modelPath, gridSize*gridSize, animationSpeed);
     }
 
 }
