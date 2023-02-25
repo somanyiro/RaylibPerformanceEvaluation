@@ -12,9 +12,7 @@ public class AnimationScene
     static float testDuration = 10;
     static List<Dancer> dancers;
     static Config[] testConfigs = {
-        new Config("hehe", "dancer_low", 5, 24),
-        new Config("huhu", "dancer_mid", 5, 24),
-        new Config("hoho", "dancer_high", 5, 24)
+        new Config("hehe", "dancer_low", 8, 24)
     };
 
     public static void Test()
@@ -88,37 +86,41 @@ public class AnimationScene
     {
         dancers = new List<Dancer>();
 
-        for (int i = 0; i < config.gridSize; i++)
+        int gridSize = (int)MathF.Ceiling(MathF.Sqrt(config.modelCount));
+
+        for (int i = 0; i < gridSize; i++)
         {
-            for (int j = 0; j < config.gridSize; j++)
+            for (int j = 0; j < gridSize; j++)
             {
+                if (dancers.Count == config.modelCount) break;
+
                 dancers.Add(new Dancer(
                     "resources/models/"+config.modelPath+".iqm",
                     "resources/models/danceTexture.png",
                     config.animationSpeed,
-                    new Vector3(i*modelSeparation - (float)config.gridSize*modelSeparation/2f, 0, j*modelSeparation - (float)config.gridSize*modelSeparation/2f),
+                    new Vector3(i*modelSeparation - (float)gridSize*modelSeparation/2f, 0, j*modelSeparation - (float)gridSize*modelSeparation/2f),
                     0.05f));
             }
         }
 
-        Logger.SetInformation(config.label, config.modelPath, config.gridSize*config.gridSize, config.animationSpeed);
+        Logger.SetInformation(config.label, config.modelPath, config.modelCount, config.animationSpeed);
     }
 
 }
 
 struct Config
 {
-    public Config(string label, string modelPath, int gridSize, float animationSpeed)
+    public Config(string label, string modelPath, int modelCount, float animationSpeed)
     {
         this.label = label;
         this.modelPath = modelPath;
-        this.gridSize = gridSize;
+        this.modelCount = modelCount;
         this.animationSpeed = animationSpeed;
     }
     public string label;
 
     public string modelPath;
-    public int gridSize;
+    public int modelCount;
     public float animationSpeed;
 }
 
