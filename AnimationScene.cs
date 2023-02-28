@@ -8,11 +8,46 @@ public class AnimationScene
 {
 
     static float modelSeparation = 5;
-    static float stabilizeTime = 5;
-    static float testDuration = 10;
+    static float stabilizeTime = 1;
+    static float testDuration = 5;
     static List<Dancer> dancers;
+    static string[] models = {
+        "dancer_low",
+        "dancer_mid",
+        "dancer_high"
+    };
     static Config[] testConfigs = {
-        new Config("hehe", "dancer_low", 8, 24)
+        new Config("low vertex count model", 0, 16, 24),
+        new Config("low vertex count model", 0, 64, 24),
+        new Config("mid vertex count model", 1, 16, 24),
+        new Config("mid vertex count model", 1, 64, 24),
+        new Config("high vertex count model", 2, 16, 24),
+        new Config("high vertex count model", 2, 64, 24),
+        /*
+        new Config("low vertex count model", 0, 1, 24),
+        new Config("low vertex count model", 0, 4, 24),
+        new Config("low vertex count model", 0, 8, 24),
+        new Config("low vertex count model", 0, 16, 24),
+        new Config("low vertex count model", 0, 32, 24),
+        new Config("low vertex count model", 0, 64, 24),
+        new Config("low vertex count model", 0, 128, 24),
+
+        new Config("mid vertex count model", 1, 1, 24),
+        new Config("mid vertex count model", 1, 4, 24),
+        new Config("mid vertex count model", 1, 8, 24),
+        new Config("mid vertex count model", 1, 16, 24),
+        new Config("mid vertex count model", 1, 32, 24),
+        new Config("mid vertex count model", 1, 64, 24),
+        new Config("mid vertex count model", 1, 128, 24),
+
+        new Config("high vertex count model", 2, 1, 24),
+        new Config("high vertex count model", 2, 4, 24),
+        new Config("high vertex count model", 2, 8, 24),
+        new Config("high vertex count model", 2, 16, 24),
+        new Config("high vertex count model", 2, 32, 24),
+        new Config("high vertex count model", 2, 64, 24),
+        new Config("high vertex count model", 2, 128, 24)
+        */
     };
 
     public static void Test()
@@ -51,7 +86,7 @@ public class AnimationScene
 
             if (testDurationTimer.finishedThisFrame)
             {
-                Logger.Save();
+                Logger.RecordTestResult(testConfigs[currentConfig]);
                 if (currentConfig == testConfigs.Length-1) break;
                 currentConfig++;
                 SetUp(testConfigs[currentConfig]);
@@ -79,6 +114,7 @@ public class AnimationScene
             EndDrawing();
         }
 
+        Logger.Save(Config.Variable.ModelCount, Config.Variable.ModelId);
         CloseWindow();
     }
 
@@ -95,33 +131,67 @@ public class AnimationScene
                 if (dancers.Count == config.modelCount) break;
 
                 dancers.Add(new Dancer(
-                    "resources/models/"+config.modelPath+".iqm",
+                    "resources/models/"+models[config.modelId]+".iqm",
                     "resources/models/danceTexture.png",
                     config.animationSpeed,
                     new Vector3(i*modelSeparation - (float)gridSize*modelSeparation/2f, 0, j*modelSeparation - (float)gridSize*modelSeparation/2f),
                     0.05f));
             }
         }
-
-        Logger.SetInformation(config.label, config.modelPath, config.modelCount, config.animationSpeed);
     }
 
 }
 
-struct Config
+public struct Config
 {
-    public Config(string label, string modelPath, int modelCount, float animationSpeed)
+    public enum Variable
+    {
+        ModelId,
+        ModelCount,
+        AnimationSpeed
+    }
+
+    public Config(string label, int modelId, int modelCount, int animationSpeed)
     {
         this.label = label;
-        this.modelPath = modelPath;
+        this.modelId = modelId;
         this.modelCount = modelCount;
         this.animationSpeed = animationSpeed;
     }
+    public int GetValue(Variable variable)
+    {
+        switch (variable)
+        {
+            case Variable.ModelId:
+                return modelId;
+            case Variable.ModelCount:
+                return modelCount;
+            case Variable.AnimationSpeed:
+                return animationSpeed;
+            default:
+                break;
+        }
+        return 0;
+    }
+    public static string GetName(Variable variable)
+    {
+        switch (variable)
+        {
+            case Variable.ModelId:
+                return "modelId";
+            case Variable.ModelCount:
+                return "modelCount";
+            case Variable.AnimationSpeed:
+                return "animationSpeed";
+            default:
+                break;
+        }
+        return "-";
+    }
     public string label;
-
-    public string modelPath;
+    public int modelId;
     public int modelCount;
-    public float animationSpeed;
+    public int animationSpeed;
 }
 
 class Dancer
