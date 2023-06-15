@@ -132,9 +132,17 @@ public class AnimationScene
         }
         */
         //animation speed test
-        for (int i = 1; i <= 10; i++)
+        for (int i = 1; i <= 20; i++)
         {
-            testConfigs.Add(new Config("speed test", 1, 36, 12 * i));    
+            testConfigs.Add(new Config("low vertex", 0, 10, 6 * i));
+        }
+        for (int i = 1; i <= 20; i++)
+        {
+            testConfigs.Add(new Config("mid vertex", 1, 10, 6 * i));
+        }
+        for (int i = 1; i <= 20; i++)
+        {
+            testConfigs.Add(new Config("high vertex", 2, 10, 6 * i));
         }
     }
 
