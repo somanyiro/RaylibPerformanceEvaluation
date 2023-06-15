@@ -8,8 +8,8 @@ public class AnimationScene
 {
 
     static float modelSeparation = 5;
-    static float stabilizeTime = 10;
-    static float testDuration = 15;
+    static float stabilizeTime = 5;
+    static float testDuration = 10;
     static List<Dancer> dancers;
     static string[] models = {
         "dancer_low",
@@ -86,7 +86,8 @@ public class AnimationScene
             EndDrawing();
         }
 
-        Logger.Save(Config.Variable.ModelCount, Config.Variable.ModelId);
+        //Logger.Save(Config.Variable.ModelCount, Config.Variable.ModelId); //for testing performance change with number of models
+        Logger.Save(Config.Variable.AnimationSpeed, Config.Variable.ModelId); //for testing change with animation speed
         CloseWindow();
     }
 
@@ -110,23 +111,12 @@ public class AnimationScene
                     0.05f));
             }
         }
+
+        Console.WriteLine($"model id: {config.modelId}\nmodel count: {config.modelCount}\nanimation speed: {config.animationSpeed}");
     }
 
     static void CreateTestConfigs()
     {
-        for (int i = 1; i <= 5; i++) //targeted test at weird bump with 2 models
-        {
-            testConfigs.Add(new Config("low vertex", 0, i, 24));
-        }
-        for (int i = 1; i <= 5; i++)
-        {
-            testConfigs.Add(new Config("mid vertex", 1, i, 24));
-        }
-        for (int i = 1; i <= 5; i++)
-        {
-            testConfigs.Add(new Config("high vertex", 2, i, 24));
-        }
-
         /*
         for (int i = 1; i <= 50; i++) //general performance test
         {
@@ -141,6 +131,11 @@ public class AnimationScene
             testConfigs.Add(new Config("high vertex", 2, i, 24));
         }
         */
+        //animation speed test
+        for (int i = 1; i <= 10; i++)
+        {
+            testConfigs.Add(new Config("speed test", 1, 36, 12 * i));    
+        }
     }
 
 }
