@@ -8,50 +8,22 @@ public class AnimationScene
 {
 
     static float modelSeparation = 5;
-    static float stabilizeTime = 1;
-    static float testDuration = 5;
+    static float stabilizeTime = 10;
+    static float testDuration = 15;
     static List<Dancer> dancers;
     static string[] models = {
         "dancer_low",
         "dancer_mid",
         "dancer_high"
     };
-    static Config[] testConfigs = {
-        new Config("low vertex count model", 0, 16, 24),
-        new Config("low vertex count model", 0, 64, 24),
-        new Config("mid vertex count model", 1, 16, 24),
-        new Config("mid vertex count model", 1, 64, 24),
-        new Config("high vertex count model", 2, 16, 24),
-        new Config("high vertex count model", 2, 64, 24),
-        /*
-        new Config("low vertex count model", 0, 1, 24),
-        new Config("low vertex count model", 0, 4, 24),
-        new Config("low vertex count model", 0, 8, 24),
-        new Config("low vertex count model", 0, 16, 24),
-        new Config("low vertex count model", 0, 32, 24),
-        new Config("low vertex count model", 0, 64, 24),
-        new Config("low vertex count model", 0, 128, 24),
-
-        new Config("mid vertex count model", 1, 1, 24),
-        new Config("mid vertex count model", 1, 4, 24),
-        new Config("mid vertex count model", 1, 8, 24),
-        new Config("mid vertex count model", 1, 16, 24),
-        new Config("mid vertex count model", 1, 32, 24),
-        new Config("mid vertex count model", 1, 64, 24),
-        new Config("mid vertex count model", 1, 128, 24),
-
-        new Config("high vertex count model", 2, 1, 24),
-        new Config("high vertex count model", 2, 4, 24),
-        new Config("high vertex count model", 2, 8, 24),
-        new Config("high vertex count model", 2, 16, 24),
-        new Config("high vertex count model", 2, 32, 24),
-        new Config("high vertex count model", 2, 64, 24),
-        new Config("high vertex count model", 2, 128, 24)
-        */
+    static List<Config> testConfigs = new List<Config>() {
+        //new Config("test name", 1, 25, 24)
     };
 
     public static void Test()
     {
+        CreateTestConfigs();//modifiy this function if you have a lot of tests to set up
+        
         InitWindow(1280, 720, "Animation test");
         
         //SetTargetFPS(60);
@@ -87,7 +59,7 @@ public class AnimationScene
             if (testDurationTimer.finishedThisFrame)
             {
                 Logger.RecordTestResult(testConfigs[currentConfig]);
-                if (currentConfig == testConfigs.Length-1) break;
+                if (currentConfig == testConfigs.Count-1) break;
                 currentConfig++;
                 SetUp(testConfigs[currentConfig]);
                 stabilizeTimer.Reset();
@@ -138,6 +110,37 @@ public class AnimationScene
                     0.05f));
             }
         }
+    }
+
+    static void CreateTestConfigs()
+    {
+        for (int i = 1; i <= 5; i++) //targeted test at weird bump with 2 models
+        {
+            testConfigs.Add(new Config("low vertex", 0, i, 24));
+        }
+        for (int i = 1; i <= 5; i++)
+        {
+            testConfigs.Add(new Config("mid vertex", 1, i, 24));
+        }
+        for (int i = 1; i <= 5; i++)
+        {
+            testConfigs.Add(new Config("high vertex", 2, i, 24));
+        }
+
+        /*
+        for (int i = 1; i <= 50; i++) //general performance test
+        {
+            testConfigs.Add(new Config("low vertex", 0, i, 24));
+        }
+        for (int i = 1; i <= 50; i++)
+        {
+            testConfigs.Add(new Config("mid vertex", 1, i, 24));
+        }
+        for (int i = 1; i <= 50; i++)
+        {
+            testConfigs.Add(new Config("high vertex", 2, i, 24));
+        }
+        */
     }
 
 }

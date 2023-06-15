@@ -13,8 +13,12 @@
         "packagesPath": "/home/soma/.nuget/packages/",
         "outputPath": "/home/soma/Documents/Saxion/AdvancedTools/RaylibPerformanceEvaluation/obj/",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "/home/soma/.local/share/godot/mono/GodotNuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "/home/soma/.nuget/NuGet/NuGet.Config"
+          "/home/soma/.nuget/NuGet/NuGet.Config",
+          "/home/soma/.nuget/NuGet/config/Godot.Offline.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
@@ -58,7 +62,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/6.0.113/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/6.0.116/RuntimeIdentifierGraph.json"
         }
       }
     }

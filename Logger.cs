@@ -28,17 +28,17 @@ public static class Logger
 
         results.Add(new TestResult(
             config,
-            (float)Math.Round(1f/average, 2),
-            (float)Math.Round(1f/median, 2),
-            (float)Math.Round(average*1000, 2),
-            (float)Math.Round(median*1000, 2)
+            (float)Math.Round(1f/average, 4),
+            (float)Math.Round(1f/median, 4),
+            (float)Math.Round(average*1000, 4),
+            (float)Math.Round(median*1000, 4)
         ));
 
         ClearFrames();
     }
 
     public static void Save(Config.Variable columnVariable, Config.Variable rowVariable)
-    {            
+    {
         List<int> allColumns = new List<int>();
         List<int> allRows = new List<int>();
         foreach (TestResult result in results)
@@ -65,11 +65,19 @@ public static class Logger
                 sw.Write(row+";");
                 foreach (int column in allColumns)
                 {
-                    TestResult result = results.Single(
-                        x => x.config.GetValue(columnVariable) == column 
-                        && x.config.GetValue(rowVariable) == row);
-                    sw.Write(result.averageFrameTime+";");
-                    //this is messy and inefficient but it only runs onece and I can't spend more time on it
+                    try
+                    {
+                        TestResult result = results.Single(
+                            x => x.config.GetValue(columnVariable) == column 
+                            && x.config.GetValue(rowVariable) == row);
+                        sw.Write(result.averageFrameTime+";");
+                        //this is messy and inefficient but it only runs once and I can't spend more time on it
+                    }
+                    catch (System.Exception e)
+                    {
+                        Console.WriteLine($"{e.Message} at column {column} and row {row}");
+                        sw.Write("error;");
+                    }
                 }
                 sw.Write("\n");
             }
@@ -83,7 +91,7 @@ public static class Logger
         frames.Clear();
     }
 
-    static void CleanFrames()
+    static void CleanFrames()//raylib does a frame skip from once in a while, which I'm removing from the results here
     {
         List<float> ordered = frames.OrderBy(x => x).ToList();
         double middle = (frames.Count - 1) / 2.0;
