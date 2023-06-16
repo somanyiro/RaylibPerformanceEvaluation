@@ -93,8 +93,9 @@ public class AnimationScene
             EndDrawing();
         }
 
-        Logger.Save(Config.Variable.ModelCount, Config.Variable.ModelId); //for testing performance change with number of models
+        //Logger.Save(Config.Variable.ModelCount, Config.Variable.ModelId); //for testing performance change with number of models
         //Logger.Save(Config.Variable.AnimationSpeed, Config.Variable.ModelId); //for testing change with animation speed
+        Logger.Save(Config.Variable.TextureId, Config.Variable.ModelId); //for testing texture resolutions
         CloseWindow();
     }
 
@@ -119,16 +120,17 @@ public class AnimationScene
             }
         }
 
-        Console.WriteLine($"model id: {config.modelId}\nmodel count: {config.modelCount}\nanimation speed: {config.animationSpeed}");
+        Console.WriteLine($"model id: {config.modelId}\nmodel count: {config.modelCount}\nanimation speed: {config.animationSpeed}\ntexture id: {config.textureId}");
     }
 
     static void CreateTestConfigs()
     {
-        testConfigs.Add(new Config(" ", 2, 15, 24, 4));
-        testConfigs.Add(new Config(" ", 2, 16, 24, 4));
-        testConfigs.Add(new Config(" ", 2, 17, 24, 4));
-        testConfigs.Add(new Config(" ", 2, 18, 24, 4));
-        testConfigs.Add(new Config(" ", 2, 19, 24, 4));
+        //texture resolution test
+        testConfigs.Add(new Config(" ", 1, 20, 24, 0));
+        testConfigs.Add(new Config(" ", 1, 20, 24, 1));
+        testConfigs.Add(new Config(" ", 1, 20, 24, 2));
+        testConfigs.Add(new Config(" ", 1, 20, 24, 3));
+        testConfigs.Add(new Config(" ", 1, 20, 24, 4));
         /*
         for (int i = 1; i <= 50; i++) //general performance test
         {
