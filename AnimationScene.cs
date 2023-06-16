@@ -8,13 +8,20 @@ public class AnimationScene
 {
 
     static float modelSeparation = 5;
-    static float stabilizeTime = 5;
-    static float testDuration = 10;
+    static float stabilizeTime = 10;
+    static float testDuration = 15;
     static List<Dancer> dancers;
     static string[] models = {
         "dancer_low",
         "dancer_mid",
         "dancer_high"
+    };
+    static string[] textures = {
+        "danceTexture_256",
+        "danceTexture_512",
+        "danceTexture_1024",
+        "danceTexture_2048",
+        "danceTexture_4096"
     };
     static List<Config> testConfigs = new List<Config>() {
         //new Config("test name", 1, 25, 24)
@@ -86,8 +93,8 @@ public class AnimationScene
             EndDrawing();
         }
 
-        //Logger.Save(Config.Variable.ModelCount, Config.Variable.ModelId); //for testing performance change with number of models
-        Logger.Save(Config.Variable.AnimationSpeed, Config.Variable.ModelId); //for testing change with animation speed
+        Logger.Save(Config.Variable.ModelCount, Config.Variable.ModelId); //for testing performance change with number of models
+        //Logger.Save(Config.Variable.AnimationSpeed, Config.Variable.ModelId); //for testing change with animation speed
         CloseWindow();
     }
 
@@ -105,7 +112,7 @@ public class AnimationScene
 
                 dancers.Add(new Dancer(
                     "resources/models/"+models[config.modelId]+".iqm",
-                    "resources/models/danceTexture.png",
+                    "resources/models/"+textures[config.textureId]+".png",
                     config.animationSpeed,
                     new Vector3(i*modelSeparation - (float)gridSize*modelSeparation/2f, 0, j*modelSeparation - (float)gridSize*modelSeparation/2f),
                     0.05f));
@@ -117,33 +124,40 @@ public class AnimationScene
 
     static void CreateTestConfigs()
     {
+        testConfigs.Add(new Config(" ", 2, 15, 24, 4));
+        testConfigs.Add(new Config(" ", 2, 16, 24, 4));
+        testConfigs.Add(new Config(" ", 2, 17, 24, 4));
+        testConfigs.Add(new Config(" ", 2, 18, 24, 4));
+        testConfigs.Add(new Config(" ", 2, 19, 24, 4));
         /*
         for (int i = 1; i <= 50; i++) //general performance test
         {
-            testConfigs.Add(new Config("low vertex", 0, i, 24));
+            testConfigs.Add(new Config("low vertex", 0, i, 24, 4));
         }
         for (int i = 1; i <= 50; i++)
         {
-            testConfigs.Add(new Config("mid vertex", 1, i, 24));
+            testConfigs.Add(new Config("mid vertex", 1, i, 24, 4));
         }
         for (int i = 1; i <= 50; i++)
         {
-            testConfigs.Add(new Config("high vertex", 2, i, 24));
+            testConfigs.Add(new Config("high vertex", 2, i, 24, 4));
         }
         */
         //animation speed test
+        /*
         for (int i = 1; i <= 20; i++)
         {
-            testConfigs.Add(new Config("low vertex", 0, 10, 6 * i));
+            testConfigs.Add(new Config("low vertex", 0, 10, 6 * i, 4));
         }
         for (int i = 1; i <= 20; i++)
         {
-            testConfigs.Add(new Config("mid vertex", 1, 10, 6 * i));
+            testConfigs.Add(new Config("mid vertex", 1, 10, 6 * i, 4));
         }
         for (int i = 1; i <= 20; i++)
         {
-            testConfigs.Add(new Config("high vertex", 2, 10, 6 * i));
+            testConfigs.Add(new Config("high vertex", 2, 10, 6 * i, 4));
         }
+        */
     }
 
 }
@@ -154,15 +168,17 @@ public struct Config
     {
         ModelId,
         ModelCount,
-        AnimationSpeed
+        AnimationSpeed,
+        TextureId
     }
 
-    public Config(string label, int modelId, int modelCount, int animationSpeed)
+    public Config(string label, int modelId, int modelCount, int animationSpeed, int textureId)
     {
         this.label = label;
         this.modelId = modelId;
         this.modelCount = modelCount;
         this.animationSpeed = animationSpeed;
+        this.textureId = textureId;
     }
     public int GetValue(Variable variable)
     {
@@ -174,6 +190,8 @@ public struct Config
                 return modelCount;
             case Variable.AnimationSpeed:
                 return animationSpeed;
+            case Variable.TextureId:
+                return textureId;
             default:
                 break;
         }
@@ -189,6 +207,8 @@ public struct Config
                 return "modelCount";
             case Variable.AnimationSpeed:
                 return "animationSpeed";
+            case Variable.TextureId:
+                return "textureId";
             default:
                 break;
         }
@@ -198,6 +218,7 @@ public struct Config
     public int modelId;
     public int modelCount;
     public int animationSpeed;
+    public int textureId;
 }
 
 class Dancer
