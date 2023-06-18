@@ -7,8 +7,8 @@ namespace Tests
 public class AnimationScene
 {
     static float modelSeparation = 5;
-    static float stabilizeTime = 5;
-    static float testDuration = 100;
+    static float stabilizeTime = 10;
+    static float testDuration = 20;
     static List<Dancer> dancers = new List<Dancer>();
     static string[] models = {
         "dancer_low",
@@ -103,9 +103,9 @@ public class AnimationScene
             EndDrawing();
         }
 
-        Logger.Save(Config.Variable.ModelCount, Config.Variable.ModelId); //for testing performance change with number of models
+        //Logger.Save(Config.Variable.ModelCount, Config.Variable.ModelId); //for testing performance change with number of models
         //Logger.Save(Config.Variable.AnimationSpeed, Config.Variable.ModelId); //for testing change with animation speed
-        //Logger.Save(Config.Variable.TextureId, Config.Variable.ModelId); //for testing texture resolutions
+        Logger.Save(Config.Variable.TextureId, Config.Variable.ModelId); //for testing texture resolutions
         CloseWindow();
     }
 
@@ -135,16 +135,9 @@ public class AnimationScene
     static void CreateTestConfigs()
     {
 
-        //texture resolution test
+        //general performance test
         /*
-        testConfigs.Add(new Config(" ", 1, 20, 24, 0));
-        testConfigs.Add(new Config(" ", 1, 20, 24, 1));
-        testConfigs.Add(new Config(" ", 1, 20, 24, 2));
-        testConfigs.Add(new Config(" ", 1, 20, 24, 3));
-        testConfigs.Add(new Config(" ", 1, 20, 24, 4));
-        */
-        /*
-        for (int i = 1; i <= 50; i++) //general performance test
+        for (int i = 1; i <= 50; i++)
         {
             testConfigs.Add(new Config("low vertex", 0, i, 24, 4));
         }
@@ -172,6 +165,19 @@ public class AnimationScene
             testConfigs.Add(new Config("high vertex", 2, 10, 6 * i, 4));
         }
         */
+        //texture resolution test
+        for (int i = 0; i <= 4; i++)
+        {
+            testConfigs.Add(new Config("low vertex", 0, 10, 24, i));
+        }
+        for (int i = 0; i <= 4; i++)
+        {
+            testConfigs.Add(new Config("mid vertex", 1, 10, 24, i));
+        }
+        for (int i = 0; i <= 4; i++)
+        {
+            testConfigs.Add(new Config("high vertex", 2, 10, 24, i));
+        }
     }
 
 }
