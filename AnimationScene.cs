@@ -6,11 +6,10 @@ namespace Tests
 {
 public class AnimationScene
 {
-
     static float modelSeparation = 5;
-    static float stabilizeTime = 10;
-    static float testDuration = 15;
-    static List<Dancer> dancers;
+    static float stabilizeTime = 5;
+    static float testDuration = 100;
+    static List<Dancer> dancers = new List<Dancer>();
     static string[] models = {
         "dancer_low",
         "dancer_mid",
@@ -50,12 +49,21 @@ public class AnimationScene
         SetUp(testConfigs[0]);
         int currentConfig = 0;
 
+        bool timerFrameSkip = false; //variable needed to make the timers skip the frame where the models are being loaded
+
         while (!WindowShouldClose())
         {
             float delta = GetFrameTime();
 
-            stabilizeTimer.AdvanceTimer(delta);
-            testDurationTimer.AdvanceTimer(delta);
+            if (timerFrameSkip)
+            {
+                timerFrameSkip = false;
+            }
+            else
+            {
+                stabilizeTimer.AdvanceTimer(delta);
+                testDurationTimer.AdvanceTimer(delta);
+            }
 
             if (stabilizeTimer.finishedThisFrame)
                 Console.WriteLine("Beginning frame logging");
@@ -66,12 +74,13 @@ public class AnimationScene
             if (testDurationTimer.finishedThisFrame)
             {
                 Logger.RecordTestResult(testConfigs[currentConfig]);
-                CleanUp();
+                dancers.Clear();
                 if (currentConfig == testConfigs.Count-1) break;
                 currentConfig++;
                 SetUp(testConfigs[currentConfig]);
                 stabilizeTimer.Reset();
                 testDurationTimer.Reset();
+                timerFrameSkip = true;
             }
 
             UpdateCamera(ref camera);
@@ -102,8 +111,6 @@ public class AnimationScene
 
     static void SetUp(Config config)
     {
-        dancers = new List<Dancer>();
-
         int gridSize = (int)MathF.Ceiling(MathF.Sqrt(config.modelCount));
 
         for (int i = 0; i < gridSize; i++)
@@ -117,28 +124,17 @@ public class AnimationScene
                     "resources/models/"+textures[config.textureId]+".png",
                     config.animationSpeed,
                     new Vector3(i*modelSeparation - (float)gridSize*modelSeparation/2f, 0, j*modelSeparation - (float)gridSize*modelSeparation/2f),
-                    0.05f));
+                    0.05f,
+                    0.1f * (i+j)));
             }
         }
 
         Console.WriteLine($"model id: {config.modelId}\nmodel count: {config.modelCount}\nanimation speed: {config.animationSpeed}\ntexture id: {config.textureId}");
     }
 
-    static void CleanUp() // let's try if this works
-    {
-        if (dancers is null) return;
-        
-        dancers.Clear();
-        dancers = null;
-
-    }
-
     static void CreateTestConfigs()
     {
-        testConfigs.Add(new Config(" ", 2, 15, 24, 4));
-        testConfigs.Add(new Config(" ", 2, 16, 24, 4));
-        testConfigs.Add(new Config(" ", 2, 17, 24, 4));
-        testConfigs.Add(new Config(" ", 2, 18, 24, 4));
+
         //texture resolution test
         /*
         testConfigs.Add(new Config(" ", 1, 20, 24, 0));
@@ -238,60 +234,4 @@ public struct Config
     public int animationSpeed;
     public int textureId;
 }
-
-class Dancer
-{
-    Model mesh;
-    float animFramesPerSec = 1;
-    uint numberOfAnims = 0;
-    int currentAnimFrame = 0;
-    float timeSinceLastAnimFrame = 0;
-    Texture2D texture;
-    List<ModelAnimation> animations = new List<ModelAnimation>();
-    Vector3 position = Vector3.Zero;
-    float scale = 1;
-
-    public Dancer(string modelPath, string texturePath, float animSpeed, Vector3 position, float scale)
-    {
-        this.position = position;
-        this.scale = scale;
-
-        mesh = AssetManager.LoadModel(modelPath);
-        texture = AssetManager.LoadTexture(texturePath);
-        SetMaterialTexture(ref mesh, 0, MaterialMapIndex.MATERIAL_MAP_ALBEDO, ref texture);
-
-        var animsSpan = LoadModelAnimations(modelPath, ref numberOfAnims);
-        foreach (var item in animsSpan)
-        {
-            animations.Add(item);
-        }
-
-        animFramesPerSec = animSpeed;
-    }
-
-    public void DrawDancer()
-    {
-        DrawModel(mesh, position, scale, Color.WHITE);
-    }
-
-    public void AdvanceAnimation(float delta)
-    {
-        timeSinceLastAnimFrame += delta;
-        bool shouldUpdate = false;
-
-        while (timeSinceLastAnimFrame > 1 / animFramesPerSec)
-        {
-            shouldUpdate = true;
-            timeSinceLastAnimFrame -= 1 / animFramesPerSec;
-            currentAnimFrame++;
-            if (currentAnimFrame >= animations[0].frameCount)
-                currentAnimFrame = 0;
-        } 
-
-        if (shouldUpdate) UpdateModelAnimation(mesh, animations[0], currentAnimFrame);
-
-    }
-
-}
-
 }
